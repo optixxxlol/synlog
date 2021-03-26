@@ -261,43 +261,108 @@ do
   end
   ColorBlock = _class_0
 end
-local chalk
-chalk = function(Text, Opts)
-  if Opts == nil then
-    Opts = { }
-  end
-  return setmetatable({ }, {
-    __index = function(self, K)
-      assert('string' == type(K), 'chalk expects a string key!')
-      local _exp_0 = K:lower()
-      if 'reset' == _exp_0 then
-        return chalk(Text, { })
-      elseif 'light' == _exp_0 then
-        Opts.lerp = Enums.Colors.White
-        return chalk(Text, Opts)
-      elseif 'dark' == _exp_0 then
-        Opts.lerp = Enums.Colors.Black
-        return chalk(Text, Opts)
-      end
-      local Color = Enums.Colors[K] or Enums.Colors[K:lower()]
-      if not (Color) then
-        K = K:lower()
-        for C, V in pairs(Enums.Colors) do
-          if C:lower() == K then
-            Color = V
-            break
-          end
-        end
-      end
-      assert(Color, 'chalk expects a valid color!')
-      if game then
-        if Opts.lerp then
-          Color = Color:lerp(Opts.lerp, .5)
-        end
-        return ColorBlock(Text, Color)
+local Frames = {
+  '/',
+  '-',
+  '\\',
+  '|'
+}
+local Spinner
+do
+  local _class_0
+  local _parent_0 = ColorBlock
+  local _base_0 = {
+    updater = function(self)
+      local F = 1 + (math.floor(7 * tick()) - 1) % 4
+      if F ~= self.Last then
+        self.Last = F
+        return self:setText(Frames[F])
       end
     end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, ...)
+      _class_0.__parent.__init(self, ' ', ...)
+      self.Last = 1
+    end,
+    __base = _base_0,
+    __name = "Spinner",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
   })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  Spinner = _class_0
+end
+local Metasploit
+do
+  local _class_0
+  local _parent_0 = ColorBlock
+  local _base_0 = {
+    updater = function(self)
+      local F = 1 + (math.floor(7 * (tick() - self.Start)) - 1) % self.Len
+      if F ~= self.Last then
+        self.Last = F
+        local T = self.Text:sub(0, F - 1):lower() .. self.Text:sub(F, F):upper() .. self.Text:sub(F + 1):lower()
+        return self:setText(T)
+      end
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, T, ...)
+      _class_0.__parent.__init(self, T:lower(), ...)
+      self.Last = tick()
+      self.Len = #T
+      self.Start = tick()
+    end,
+    __base = _base_0,
+    __name = "Metasploit",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  Metasploit = _class_0
 end
 local Line
 do
@@ -472,6 +537,116 @@ do
   end
   Line = _class_0
 end
+local SplitText
+do
+  local _class_0
+  local _parent_0 = Line
+  local _base_0 = {
+    make = function(self)
+      _class_0.__parent.__base.make(self)
+      self.Height = self:getHeight()
+      self.Width = self:getWidth()
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, Text)
+      return _class_0.__parent.__init(self, (function()
+        local _accum_0 = { }
+        local _len_0 = 1
+        for i = 1, #Text do
+          _accum_0[_len_0] = ColorBlock(Text:sub(i, i))
+          _len_0 = _len_0 + 1
+        end
+        return _accum_0
+      end)())
+    end,
+    __base = _base_0,
+    __name = "SplitText",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  SplitText = _class_0
+end
+local Rainbow
+do
+  local _class_0
+  local _parent_0 = SplitText
+  local _base_0 = {
+    updater = function(self)
+      for i, B in pairs(self.Blocks) do
+        local h = i / self.Length + tick() * -self.Speed
+        B:setColor(Color3.fromHSV(h % 1, self.Saturation / 255, self.Value / 255))
+      end
+    end
+  }
+  _base_0.__index = _base_0
+  setmetatable(_base_0, _parent_0.__base)
+  _class_0 = setmetatable({
+    __init = function(self, Text, Speed, Saturation, Value, Length)
+      if Speed == nil then
+        Speed = 1
+      end
+      if Saturation == nil then
+        Saturation = 255
+      end
+      if Value == nil then
+        Value = 255
+      end
+      if Length == nil then
+        Length = 25
+      end
+      self.Speed, self.Saturation, self.Value, self.Length = Speed, Saturation, Value, Length
+      return _class_0.__parent.__init(self, Text)
+    end,
+    __base = _base_0,
+    __name = "Rainbow",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil then
+        local parent = rawget(cls, "__parent")
+        if parent then
+          return parent[name]
+        end
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  if _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  Rainbow = _class_0
+end
 local mergestrings
 mergestrings = function(args)
   local _exp_0 = type(args)
@@ -528,11 +703,50 @@ local Mouse = nil
 if game then
   Mouse = Service.Players.LocalPlayer:GetMouse()
 end
+local chalk
+chalk = function(Text, Opts)
+  if Opts == nil then
+    Opts = { }
+  end
+  return setmetatable({ }, {
+    __index = function(self, K)
+      assert('string' == type(K), 'chalk expects a string key!')
+      local _exp_0 = K:lower()
+      if 'reset' == _exp_0 then
+        return chalk(Text, { })
+      elseif 'light' == _exp_0 then
+        Opts.lerp = Enums.Colors.White
+        return chalk(Text, Opts)
+      elseif 'dark' == _exp_0 then
+        Opts.lerp = Enums.Colors.Black
+        return chalk(Text, Opts)
+      end
+      local Color = Enums.Colors[K] or Enums.Colors[K:lower()]
+      if not (Color) then
+        K = K:lower()
+        for C, V in pairs(Enums.Colors) do
+          if C:lower() == K then
+            Color = V
+            break
+          end
+        end
+      end
+      assert(Color, 'chalk expects a valid color!')
+      if game then
+        if Opts.lerp then
+          Color = Color:lerp(Opts.lerp, .5)
+        end
+        return ColorBlock(Text, Color)
+      end
+    end
+  })
+end
 local Logger
 do
   local _class_0
   local _base_0 = {
     chalk = chalk,
+    ColorBlock = ColorBlock,
     YAlignment = Enums.YAlignment,
     XAlignment = Enums.XAlignment,
     setMaxLines = function(self, Amount)
@@ -726,232 +940,10 @@ do
   _base_0.__class = _class_0
   Logger = _class_0
 end
-local SplitText
-do
-  local _class_0
-  local _parent_0 = Line
-  local _base_0 = {
-    make = function(self)
-      _class_0.__parent.__base.make(self)
-      self.Height = self:getHeight()
-      self.Width = self:getWidth()
-    end
-  }
-  _base_0.__index = _base_0
-  setmetatable(_base_0, _parent_0.__base)
-  _class_0 = setmetatable({
-    __init = function(self, Text)
-      return _class_0.__parent.__init(self, (function()
-        local _accum_0 = { }
-        local _len_0 = 1
-        for i = 1, #Text do
-          _accum_0[_len_0] = ColorBlock(Text:sub(i, i))
-          _len_0 = _len_0 + 1
-        end
-        return _accum_0
-      end)())
-    end,
-    __base = _base_0,
-    __name = "SplitText",
-    __parent = _parent_0
-  }, {
-    __index = function(cls, name)
-      local val = rawget(_base_0, name)
-      if val == nil then
-        local parent = rawget(cls, "__parent")
-        if parent then
-          return parent[name]
-        end
-      else
-        return val
-      end
-    end,
-    __call = function(cls, ...)
-      local _self_0 = setmetatable({}, _base_0)
-      cls.__init(_self_0, ...)
-      return _self_0
-    end
-  })
-  _base_0.__class = _class_0
-  if _parent_0.__inherited then
-    _parent_0.__inherited(_parent_0, _class_0)
-  end
-  SplitText = _class_0
-end
-local Rainbow
-do
-  local _class_0
-  local _parent_0 = SplitText
-  local _base_0 = {
-    updater = function(self)
-      for i, B in pairs(self.Blocks) do
-        local h = i / self.Length + tick() * -self.Speed
-        B:setColor(Color3.fromHSV(h % 1, self.Saturation / 255, self.Value / 255))
-      end
-    end
-  }
-  _base_0.__index = _base_0
-  setmetatable(_base_0, _parent_0.__base)
-  _class_0 = setmetatable({
-    __init = function(self, Text, Speed, Saturation, Value, Length)
-      if Speed == nil then
-        Speed = 1
-      end
-      if Saturation == nil then
-        Saturation = 255
-      end
-      if Value == nil then
-        Value = 255
-      end
-      if Length == nil then
-        Length = 25
-      end
-      self.Speed, self.Saturation, self.Value, self.Length = Speed, Saturation, Value, Length
-      return _class_0.__parent.__init(self, Text)
-    end,
-    __base = _base_0,
-    __name = "Rainbow",
-    __parent = _parent_0
-  }, {
-    __index = function(cls, name)
-      local val = rawget(_base_0, name)
-      if val == nil then
-        local parent = rawget(cls, "__parent")
-        if parent then
-          return parent[name]
-        end
-      else
-        return val
-      end
-    end,
-    __call = function(cls, ...)
-      local _self_0 = setmetatable({}, _base_0)
-      cls.__init(_self_0, ...)
-      return _self_0
-    end
-  })
-  _base_0.__class = _class_0
-  if _parent_0.__inherited then
-    _parent_0.__inherited(_parent_0, _class_0)
-  end
-  Rainbow = _class_0
-end
-local Frames = {
-  '/',
-  '-',
-  '\\',
-  '|'
-}
-local Spinner
-do
-  local _class_0
-  local _parent_0 = ColorBlock
-  local _base_0 = {
-    updater = function(self)
-      local F = 1 + (math.floor(7 * tick()) - 1) % 4
-      if F ~= self.Last then
-        self.Last = F
-        return self:setText(Frames[F])
-      end
-    end
-  }
-  _base_0.__index = _base_0
-  setmetatable(_base_0, _parent_0.__base)
-  _class_0 = setmetatable({
-    __init = function(self, ...)
-      _class_0.__parent.__init(self, ' ', ...)
-      self.Last = 1
-    end,
-    __base = _base_0,
-    __name = "Spinner",
-    __parent = _parent_0
-  }, {
-    __index = function(cls, name)
-      local val = rawget(_base_0, name)
-      if val == nil then
-        local parent = rawget(cls, "__parent")
-        if parent then
-          return parent[name]
-        end
-      else
-        return val
-      end
-    end,
-    __call = function(cls, ...)
-      local _self_0 = setmetatable({}, _base_0)
-      cls.__init(_self_0, ...)
-      return _self_0
-    end
-  })
-  _base_0.__class = _class_0
-  if _parent_0.__inherited then
-    _parent_0.__inherited(_parent_0, _class_0)
-  end
-  Spinner = _class_0
-end
-local Metasploit
-do
-  local _class_0
-  local _parent_0 = ColorBlock
-  local _base_0 = {
-    updater = function(self)
-      local F = 1 + (math.floor(7 * (tick() - self.Start)) - 1) % self.Len
-      if F ~= self.Last then
-        self.Last = F
-        local T = self.Text:sub(0, F - 1):lower() .. self.Text:sub(F, F):upper() .. self.Text:sub(F + 1):lower()
-        return self:setText(T)
-      end
-    end
-  }
-  _base_0.__index = _base_0
-  setmetatable(_base_0, _parent_0.__base)
-  _class_0 = setmetatable({
-    __init = function(self, T, ...)
-      _class_0.__parent.__init(self, T:lower(), ...)
-      self.Last = tick()
-      self.Len = #T
-      self.Start = tick()
-    end,
-    __base = _base_0,
-    __name = "Metasploit",
-    __parent = _parent_0
-  }, {
-    __index = function(cls, name)
-      local val = rawget(_base_0, name)
-      if val == nil then
-        local parent = rawget(cls, "__parent")
-        if parent then
-          return parent[name]
-        end
-      else
-        return val
-      end
-    end,
-    __call = function(cls, ...)
-      local _self_0 = setmetatable({}, _base_0)
-      cls.__init(_self_0, ...)
-      return _self_0
-    end
-  })
-  _base_0.__class = _class_0
-  if _parent_0.__inherited then
-    _parent_0.__inherited(_parent_0, _class_0)
-  end
-  Metasploit = _class_0
-end
 if game then
   pcall(function()
     return SYNLOG:destroy()
   end)
   getgenv().SYNLOG = Logger()
-  local X = SYNLOG
-  do
-    local _with_0 = X
-    _with_0:setMaxLines(14)
-    _with_0:success('something worked!')
-    _with_0:info(Spinner(), 'doing something...')
-    _with_0:warn('something may go wrong')
-    _with_0:error(Metasploit('something went wrong!'))
-    return _with_0
-  end
+  return SYNLOG
 end

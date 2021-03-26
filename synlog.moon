@@ -116,33 +116,31 @@ class ColorBlock extends TextBlock
 	setColor: (@Color = Color3.new 1, 1, 1) =>
 		@Object.Color = @Color
 
-chalk = (Text, Opts = {}) ->
-	setmetatable {}, __index: (K) =>
-		assert 'string' == type(K), 'chalk expects a string key!'
-		switch K\lower!
-			when 'reset'
-				return chalk Text, {}
-			when 'light'
-				Opts.lerp = Enums.Colors.White
-				return chalk Text, Opts
-			when 'dark'
-				Opts.lerp = Enums.Colors.Black
-				return chalk Text, Opts
-			-- TODO: underline, background, etc
+Frames = {'/','-','\\','|'}
+class Spinner extends ColorBlock
+	new: (...) =>
+		super ' ', ...
+		@Last = 1
 
-		Color = Enums.Colors[K] or Enums.Colors[K\lower!]
-		unless Color
-			K = K\lower!
-			for C, V in pairs Enums.Colors
-				if C\lower! == K
-					Color = V
-					break
-		
-		assert Color, 'chalk expects a valid color!'
-		if game
-			if Opts.lerp
-				Color = Color\lerp Opts.lerp, .5
-			ColorBlock Text, Color
+	updater: =>
+		F = 1 + (math.floor(7*tick!)-1)%4
+		if F != @Last
+			@Last = F
+			@setText Frames[F]
+
+class Metasploit extends ColorBlock
+	new: (T, ...) =>
+		super T\lower!, ...
+		@Last = tick!
+		@Len = #T
+		@Start = tick!
+
+	updater: =>
+		F = 1 + (math.floor(7*(tick!-@Start))-1)%@Len
+		if F != @Last
+			@Last = F
+			T = @Text\sub(0,F-1)\lower! .. @Text\sub(F,F)\upper! .. @Text\sub(F+1)\lower!
+			@setText T
 
 class Line extends Block -- contains horizontal blocks
 	@isLine: (T) -> isClass Line, T
@@ -210,6 +208,24 @@ class Line extends Block -- contains horizontal blocks
 
 	__tostring: => table.concat [tostring b for b in *@Blocks], ''
 
+class SplitText extends Line
+	new: (Text) =>
+		super [ColorBlock Text\sub i, i for i = 1, #Text]
+
+	make: =>
+		super!
+		@Height = @getHeight!
+		@Width = @getWidth!
+
+class Rainbow extends SplitText
+	new: (Text, @Speed = 1, @Saturation = 255, @Value = 255, @Length = 25) =>
+		super Text
+
+	updater: =>
+		for i, B in pairs @Blocks
+			h = i/@Length + tick!*-@Speed
+			B\setColor Color3.fromHSV h % 1, @Saturation/255, @Value/255
+
 mergestrings = (args) ->
 	switch type args
 		when 'string'
@@ -255,8 +271,37 @@ Mouse = nil
 if game
 	Mouse = Service.Players.LocalPlayer\GetMouse!
 
+chalk = (Text, Opts = {}) ->
+	setmetatable {}, __index: (K) =>
+		assert 'string' == type(K), 'chalk expects a string key!'
+		switch K\lower!
+			when 'reset'
+				return chalk Text, {}
+			when 'light'
+				Opts.lerp = Enums.Colors.White
+				return chalk Text, Opts
+			when 'dark'
+				Opts.lerp = Enums.Colors.Black
+				return chalk Text, Opts
+			-- TODO: underline, background, etc
+
+		Color = Enums.Colors[K] or Enums.Colors[K\lower!]
+		unless Color
+			K = K\lower!
+			for C, V in pairs Enums.Colors
+				if C\lower! == K
+					Color = V
+					break
+		
+		assert Color, 'chalk expects a valid color!'
+		if game
+			if Opts.lerp
+				Color = Color\lerp Opts.lerp, .5
+			ColorBlock Text, Color
+
 class Logger
 	:chalk
+	:ColorBlock
 	YAlignment: Enums.YAlignment
 	XAlignment: Enums.XAlignment
 
@@ -392,50 +437,6 @@ class Logger
 				else @print
 
 			fn @, s, ...
-
-class SplitText extends Line
-	new: (Text) =>
-		super [ColorBlock Text\sub i, i for i = 1, #Text]
-
-	make: =>
-		super!
-		@Height = @getHeight!
-		@Width = @getWidth!
-
-class Rainbow extends SplitText
-	new: (Text, @Speed = 1, @Saturation = 255, @Value = 255, @Length = 25) =>
-		super Text
-
-	updater: =>
-		for i, B in pairs @Blocks
-			h = i/@Length + tick!*-@Speed
-			B\setColor Color3.fromHSV h % 1, @Saturation/255, @Value/255
-
-Frames = {'/','-','\\','|'}
-class Spinner extends ColorBlock
-	new: (...) =>
-		super ' ', ...
-		@Last = 1
-
-	updater: =>
-		F = 1 + (math.floor(7*tick!)-1)%4
-		if F != @Last
-			@Last = F
-			@setText Frames[F]
-
-class Metasploit extends ColorBlock
-	new: (T, ...) =>
-		super T\lower!, ...
-		@Last = tick!
-		@Len = #T
-		@Start = tick!
-
-	updater: =>
-		F = 1 + (math.floor(7*(tick!-@Start))-1)%@Len
-		if F != @Last
-			@Last = F
-			T = @Text\sub(0,F-1)\lower! .. @Text\sub(F,F)\upper! .. @Text\sub(F+1)\lower!
-			@setText T
 
 if game
 	pcall -> SYNLOG\destroy!
