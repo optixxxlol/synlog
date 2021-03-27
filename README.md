@@ -26,6 +26,21 @@ synlog:error('something happened') -- prints 'ERROR something happened'
 
 ### Preview
 ![a picture of synlog](https://i.imgur.com/Il3gYUq.png)
+### Using with [logfile](https://github.com/Belkworks/logfile)
+
+Call the `:logger()` method to get a logfile-compatible writer.
+```lua
+file = log.logfile('events.log')
+levels = {
+    system = "WARN",
+    other = "INFO",
+    hush = "OFF"
+}
+
+combined = log.combine(file, synlog:logger())
+log.init(levels, combined)
+```
+
 ### Using Colors
 
 To create a colored block of text, synlog provides a **chalk** function.  
