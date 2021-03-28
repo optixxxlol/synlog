@@ -854,12 +854,17 @@ do
     makeLine = function(self, A, ...)
       return Line(mergestrings(A), ...)
     end,
+    setDefaultTime = function(self, DefaultTime)
+      self.DefaultTime = DefaultTime
+    end,
     print = function(self, ...)
       local args = {
         ...
       }
       spawn(function()
-        return self:addLine(self:makeLine(args))
+        return self:addLine(self:makeLine(args, {
+          Time = self.DefaultTime
+        }))
       end)
       return wait()
     end,

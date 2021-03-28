@@ -407,9 +407,11 @@ class Logger
 
     makeLine: (A, ...) => Line mergestrings(A), ...
 
+    setDefaultTime: (@DefaultTime) =>
+
     print: (...) =>
         args = {...}
-        spawn -> @addLine @makeLine args
+        spawn -> @addLine @makeLine args, Time: @DefaultTime
         wait!
 
     destroy: =>
