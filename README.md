@@ -24,6 +24,12 @@ Same as **print**, but prefixes the blocks with a colored tag.
 synlog:error('something happened') -- prints 'ERROR something happened'
 ```
 
+**setDefaultTime**: `synlog:setDefaultTime(seconds) -> nil`  
+Sets the default duration that logs are shown.
+```lua
+synlog:setDefaultTime(4) -- logs will appear for 4 seconds
+```
+
 ### Preview
 ![a picture of synlog](https://i.imgur.com/Il3gYUq.png)
 ### Using with [logfile](https://github.com/Belkworks/logfile)
