@@ -47,7 +47,6 @@ Enums =
 isClass = (Class, Value) ->
     if C = Value.__class
         return true if C == Class
-        
         if P = Value.__parent
             return isClass Class, P
 
@@ -108,7 +107,7 @@ class TextBlock extends Block
 class ColorBlock extends TextBlock
     new: (Text, @Color) =>
         super Text
-    
+
     make: =>
         super!
         @setColor @Color
@@ -260,7 +259,7 @@ mergestrings = (args) ->
 
     while i < k
         shift!
-    
+
     done!
 
     result
@@ -292,7 +291,7 @@ chalk = (Text, Opts = {}) ->
                 if C\lower! == K
                     Color = V
                     break
-        
+
         assert Color, 'chalk expects a valid color!'
         if game
             if Opts.lerp
@@ -383,7 +382,7 @@ class Logger
                 @runQueue!
 
         @update!
-    
+
     runQueue: =>
         return if @runningQueue
         return if #@Lines >= @Options.MaxLines
