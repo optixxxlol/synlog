@@ -44,13 +44,15 @@ Enums =
         Grey: RGB 107, 107, 107
         GreyGrey: RGB 70, 70, 70
 
-isClass = (Class, Value) ->
+isClass = (Value, Class) ->
+    return false unless (type Value) == 'table'
     if C = Value.__class
         return true if C == Class
-        if P = Value.__parent
-            return isClass Class, P
+        if B = C.__base
+            return true if B == Class
 
-    false
+        if P = C.__parent
+            return isClass P, Class
 
 class Block -- a drawn element
     @isBlock: (T) -> isClass Block, T.__class

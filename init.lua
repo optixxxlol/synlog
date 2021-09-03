@@ -60,7 +60,10 @@ local Enums = {
   }
 }
 local isClass
-isClass = function(Class, Value)
+isClass = function(Value, Class)
+  if not ((type(Value)) == 'table') then
+    return false
+  end
   do
     local C = Value.__class
     if C then
@@ -68,14 +71,21 @@ isClass = function(Class, Value)
         return true
       end
       do
-        local P = Value.__parent
+        local B = C.__base
+        if B then
+          if B == Class then
+            return true
+          end
+        end
+      end
+      do
+        local P = C.__parent
         if P then
-          return isClass(Class, P)
+          return isClass(P, Class)
         end
       end
     end
   end
-  return false
 end
 local Block
 do
