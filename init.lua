@@ -127,7 +127,7 @@ do
   _base_0.__class = _class_0
   local self = _class_0
   self.isBlock = function(T)
-    return isClass(Block, T.__class)
+    return isClass(T, Block)
   end
   Block = _class_0
 end
@@ -540,7 +540,7 @@ do
   _base_0.__class = _class_0
   local self = _class_0
   self.isLine = function(T)
-    return isClass(Line, T)
+    return isClass(T, Line)
   end
   if _parent_0.__inherited then
     _parent_0.__inherited(_parent_0, _class_0)

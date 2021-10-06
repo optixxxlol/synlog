@@ -55,7 +55,7 @@ isClass = (Value, Class) ->
             return isClass P, Class
 
 class Block -- a drawn element
-    @isBlock: (T) -> isClass Block, T.__class
+    @isBlock: (T) -> isClass T, Block
 
     setHeight: (@Height) =>
     setWidth: (@Width) =>
@@ -144,7 +144,7 @@ class Metasploit extends ColorBlock
             @setText T
 
 class Line extends Block -- contains horizontal blocks
-    @isLine: (T) -> isClass Line, T
+    @isLine: (T) -> isClass T, Line
     new: (Blocks = {}, @Options = {}) =>
         defaults @Options,
             Time: 3
