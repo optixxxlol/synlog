@@ -160,8 +160,8 @@ do
         local _with_0 = self.Object
         _with_0.Text = self.Text
         _with_0.Color = Color3.new(1, 1, 1)
-        _with_0.Size = 21
-        _with_0.Font = Drawing.Fonts.Monospace
+        _with_0.Size = 13
+        _with_0.Font = Drawing.Fonts.Plex
         _with_0.Center = false
         _with_0.Outline = true
         self.Width = _with_0.TextBounds.X
@@ -935,8 +935,8 @@ do
         YAlignment = self.YAlignment.BOTTOM,
         XAlignment = self.XAlignment.LEFT,
         MaxLines = 9,
-        Size = 11,
-        Font = 'Monospace'
+        Size = 13,
+        Font = 'Plex'
       })
       self.Lines = { }
       self.Queue = { }
