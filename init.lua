@@ -780,7 +780,7 @@ do
       local count = #self.Lines
       for i, L in pairs(self.Lines) do
         L = self.Lines[i]
-        L:move(8, 50 + sizeY - 8 - height)
+        L:move(90, 50 + sizeY - 8 - height)
         height = height + L.Height
       end
     end,
