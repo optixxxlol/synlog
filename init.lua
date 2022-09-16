@@ -932,7 +932,7 @@ do
       end
       self.Options = Options
       defaults(self.Options, {
-        YAlignment = self.YAlignment.BOTTOM,
+        YAlignment = self.YAlignment.TOP,
         XAlignment = self.XAlignment.LEFT,
         MaxLines = 9,
         Size = 13,
