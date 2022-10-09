@@ -31,11 +31,11 @@ local Color3 = Color3 or {
 local RGB = Color3.fromRGB
 local Enums = {
   YAlignment = {
-    TOP = 1,
+    TOP = 100,
     BOTTOM = 0
   },
   XAlignment = {
-    LEFT = 1,
+    LEFT = -10,
     RIGHT = 0
   },
   Colors = {
